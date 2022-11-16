@@ -4,7 +4,6 @@ from werkzeug.utils import secure_filename
 from passlib.hash import sha512_crypt
 from random import randint
 from time import asctime
-import webbrowser
 import pickle
 
 app = Flask(__name__)
