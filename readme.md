@@ -26,12 +26,12 @@ Memester is social media platform that is used for chatting with other users and
 
 1. Make sure you have Python, Git, and your IDE of choice setup on your computer
 2. Open up the command line of your choosing
-3. navigate to the directory where you want to run the project
-4. run the following commands:
-5. git clone https://github.com/strategio-tech/fp-sim6-ec2read.git
-6. cd fp-sim6-ec2read
-7. pip install -r requirements.txt
-8. python app.py
-9. Navigate to a web browser
-10. Go to http://localhost:8000
-11. There is the project in all of it's glory! 
+3. Navigate to the directory where you want to run the project
+4. Run the following commands:
+    1. `git clone https://github.com/strategio-tech/fp-sim6-ec2read.git`
+    2. `cd fp-sim6-ec2read`
+    3. `pip install -r requirements.txt`
+    4. `python app.py`
+5. Navigate to a web browser
+6. Go to http://localhost:8000
+7. There is the project in all of it's glory! 
