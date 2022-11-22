@@ -28,7 +28,7 @@ Memester is social media platform that is used for chatting with other users and
 2. Open up the command line of your choosing
 3. navigate to the directory where you want to run the project
 4. run the following commands:
-5. git clone ...
+5. git clone https://github.com/strategio-tech/fp-sim6-ec2read.git
 6. cd fp-sim6-ec2read
 7. pip install -r requirements.txt
 8. python app.py
