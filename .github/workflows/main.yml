@@ -71,7 +71,7 @@ jobs:
           # upload the docker image for this pipeline
           aws lightsail push-container-image \
             --service-name memester  \
-            --label fp-sim6-ec2read-latest  \
+            --label fp-sim6-ec2read  \
             --image fp-sim6-ec2read
 
           # get uploaded image (its different every time)
