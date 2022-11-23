@@ -31,18 +31,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build Docker image
-        run: docker build -- -t jcoiffman/fp-sim6-ec2read:$GITHUB_SHA -t jcoiffman/fp-sim6-ec2read:latest
+        run: docker build -t jcoiffman/fp-sim6-ec2read:latest
       - name: Login to DockerHub
         run: |
           echo "Authenticating docker.io"
           echo ${{ secrets.DOCKER_TOKEN }} | docker login --username=jcoiffman --password-stdin
       - name: Push to DockerHub
         run: |
-          docker push jcoiffman/fp-sim6-ec2read:$GITHUB_SHA
           docker push jcoiffman/fp-sim6-ec2read:latest
     outputs:
-      image: jcoiffman/fp-sim6-ec2read:$GITHUB_SHA
-      latest: jcoiffman/fp-sim6-ec2read:latest
+      image: jcoiffman/fp-sim6-ec2read:latest
 
   deploy-service-production:
     needs: [build-service]
