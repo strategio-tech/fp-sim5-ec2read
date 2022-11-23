@@ -37,11 +37,6 @@ jobs:
         run: |
           echo "Authenticating docker.io"
           echo ${{ secrets.DOCKER_TOKEN }} | docker login --username=jcoiffman --password-stdin
-      - name: Push to DockerHub
-        run: |
-          docker push fp-sim6-ec2read
-    outputs:
-      image: fp-sim6-ec2read:latest
 
   deploy-service-production:
     needs: [build-service]
@@ -72,13 +67,13 @@ jobs:
 
           docker info
           echo ${{ secrets.DOCKER_AUTH_TOKEN }} | docker login --username=jcoiffman --password-stdin
-          docker pull ${{ needs.build-service.outputs.image }}
+          
 
           # upload the docker image for this pipeline
           aws lightsail push-container-image \
             --service-name memester  \
             --label fp-sim6-ec2read-latest  \
-            --image ${{ needs.build-service.outputs.image }}
+            --image fp-sim6-ec2read
 
           # get uploaded image (its different every time)
           IMAGE_TAG=$(aws lightsail get-container-images --service memester | jq -r .containerImages[0].image)
