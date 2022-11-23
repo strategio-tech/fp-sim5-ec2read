@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build Docker image
-        run: docker build -t jcoiffman/fp-sim6-ec2read:latest
+        run: docker build -t jcoiffman/fp-sim6-ec2read
       - name: Login to DockerHub
         run: |
           echo "Authenticating docker.io"
