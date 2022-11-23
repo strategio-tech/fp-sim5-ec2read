@@ -63,6 +63,7 @@ jobs:
 
           # get uploaded image (its different every time)
           IMAGE_TAG=$(aws lightsail get-container-images --service memester | jq -r .containerImages[0].image)
+          echo $IMAGE_TAG
           
       - name: deploy
         run: |
