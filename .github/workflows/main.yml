@@ -30,25 +30,19 @@ jobs:
   build-service:
     runs-on: ubuntu-latest
     steps:
-      - name: Build vars
-        id: vars
-        run: |
-          sudo npm i -g .
-          echo "::set-output name=image::jcoiffman/fp-sim6-ec2read:$GITHUB_SHA"
-          echo "::set-output name=latest::jcoiffman/fp-sim6-ec2read:latest"
       - name: Build Docker image
-        run: docker build -- -t ${{ steps.vars.outputs.image }} -t ${{ steps.vars.outputs.latest }}
+        run: docker build -- -t jcoiffman/fp-sim6-ec2read:$GITHUB_SHA -t jcoiffman/fp-sim6-ec2read:latest
       - name: Login to DockerHub
         run: |
           echo "Authenticating docker.io"
           echo ${{ secrets.DOCKER_TOKEN }} | docker login --username=jcoiffman --password-stdin
       - name: Push to DockerHub
         run: |
-          docker push ${{ steps.vars.outputs.image }}
-          docker push ${{ steps.vars.outputs.latest }}
+          docker push jcoiffman/fp-sim6-ec2read:$GITHUB_SHA
+          docker push jcoiffman/fp-sim6-ec2read:latest
     outputs:
-      image: ${{ steps.vars.outputs.image }}
-      latest: ${{ steps.vars.outputs.latest }}
+      image: jcoiffman/fp-sim6-ec2read:$GITHUB_SHA
+      latest: jcoiffman/fp-sim6-ec2read:latest
 
   deploy-service-production:
     needs: [build-service]
