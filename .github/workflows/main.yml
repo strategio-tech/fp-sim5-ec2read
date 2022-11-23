@@ -33,16 +33,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build Docker image
         run: docker build -t fp-sim6-ec2read .
-      - name: Login to DockerHub
-        run: |
-          echo "Authenticating docker.io"
-          echo ${{ secrets.DOCKER_TOKEN }} | docker login --username=jcoiffman --password-stdin
-
-  deploy-service-production:
-    needs: [build-service]
-    runs-on: ubuntu-latest
-    steps:
-      - name: prereqs
+      - name: set-up
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACESS_KEY }}
