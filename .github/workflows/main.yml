@@ -72,7 +72,7 @@ jobs:
             --service-name memester \
             --containers "{
                             \"flask\": {
-                              \"image\": \"$IMAGE_TAG\",
+                              \"image\": \":memester.fp-sim6-ec2read.5\",
                               \"ports\": {
                                  \"5000\": \"HTTP\"
                               }
