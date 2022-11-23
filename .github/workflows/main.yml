@@ -1,4 +1,4 @@
-name: test 
+name: test and Deploy 
 
 on: [push]
 
@@ -26,3 +26,82 @@ jobs:
       - name: Test with pytest
         run: |
           pytest testing.py
+      
+  build-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build vars
+        id: vars
+        run: |
+          sudo npm i -g .
+          echo "::set-output name=image::jcoiffman/fp-sim6-ec2read:$GITHUB_SHA"
+          echo "::set-output name=latest::jcoiffman/fp-sim6-ec2read:latest"
+      - name: Build Docker image
+        run: docker build -- -t ${{ steps.vars.outputs.image }} -t ${{ steps.vars.outputs.latest }}
+      - name: Login to DockerHub
+        run: |
+          echo "Authenticating docker.io"
+          echo ${{ secrets.DOCKER_TOKEN }} | docker login --username=jcoiffman --password-stdin
+      - name: Push to DockerHub
+        run: |
+          docker push ${{ steps.vars.outputs.image }}
+          docker push ${{ steps.vars.outputs.latest }}
+    outputs:
+      image: ${{ steps.vars.outputs.image }}
+      latest: ${{ steps.vars.outputs.latest }}
+
+  deploy-service-production:
+    needs: [build-service]
+    runs-on: ubuntu-latest
+    steps:
+      - name: prereqs
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1'
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region $AWS_DEFAULT_REGION
+          aws configure set region $AWS_DEFAULT_REGION
+          cat ~/.aws/credentials
+      - name: Install essentials
+        run: |
+          aws --version
+
+          # install LightsailCTL Plugin (https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-install-software)
+          sudo apt-get update && sudo apt-get -y install curl jq
+          curl https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
+          chmod +x /usr/local/bin/lightsailctl
+      - name: Release to Amazon Lightsail
+        run: |
+          echo "Releasing to Amazon Lightsail"
+
+          docker info
+          echo ${{ secrets.DOCKER_AUTH_TOKEN }} | docker login --username=jcoiffman --password-stdin
+          docker pull ${{ needs.build-service.outputs.image }}
+
+          # upload the docker image for this pipeline
+          aws lightsail push-container-image \
+            --service-name memester  \
+            --label fp-sim6-ec2read-latest  \
+            --image ${{ needs.build-service.outputs.image }}
+
+          # get uploaded image (its different every time)
+          IMAGE_TAG=$(aws lightsail get-container-images --service memester | jq -r .containerImages[0].image)
+
+          # create a deployment with uploaded docker image
+          aws lightsail create-container-service-deployment \
+            --service-name memester \
+            --containers "{
+              \"flask\": {
+                \"image\": \"$IMAGE_TAG\",
+                \"ports\": {
+                  \"5000\": \"HTTP\"
+                }
+              }
+            }" \
+            --public-endpoint "{
+                  \"containerName\": \"flask\",
+                  \"containerPort\": 5000
+            }"
