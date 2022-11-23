@@ -39,9 +39,9 @@ jobs:
           echo ${{ secrets.DOCKER_TOKEN }} | docker login --username=jcoiffman --password-stdin
       - name: Push to DockerHub
         run: |
-          docker push jcoiffman/fp-sim6-ec2read:latest
+          docker push fp-sim6-ec2read
     outputs:
-      image: jcoiffman/fp-sim6-ec2read:latest
+      image: fp-sim6-ec2read:latest
 
   deploy-service-production:
     needs: [build-service]
