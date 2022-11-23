@@ -3,7 +3,7 @@ name: test and Deploy
 on: [push]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
     strategy:
@@ -28,6 +28,7 @@ jobs:
           pytest testing.py
       
   build-service:
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
