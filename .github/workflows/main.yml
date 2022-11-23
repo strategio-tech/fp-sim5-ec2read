@@ -76,6 +76,8 @@ jobs:
 
           # get uploaded image (its different every time)
           IMAGE_TAG=$(aws lightsail get-container-images --service memester | jq -r .containerImages[0].image)
+          echo $Image_TAG
+          sleep(5)
 
           # create a deployment with uploaded docker image
           aws lightsail create-container-service-deployment \
