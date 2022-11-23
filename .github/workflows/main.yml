@@ -52,7 +52,7 @@ jobs:
           sudo apt-get update && sudo apt-get -y install curl jq
           curl https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
           chmod +x /usr/local/bin/lightsailctl
-      - name: push-container
+      - name: push-container-and-deploy
         run: |
           echo "pushing container"
           # upload the docker image for this pipeline
@@ -63,13 +63,7 @@ jobs:
 
           # get uploaded image (its different every time)
           IMAGE_TAG=$(aws lightsail get-container-images --service memester | jq -r .containerImages[0].image)
-          echo $IMAGE_TAG
-          
-      - name: deploy
-        run: |
-          # create a deployment with uploaded docker image
-          
-          echo $IMAGE_TAG
+         
           aws lightsail create-container-service-deployment \
             --service-name memester \
             --containers "{
