@@ -71,13 +71,13 @@ jobs:
           aws lightsail create-container-service-deployment \
             --service-name memester \
             --containers "{
-              \"flask\": {
-                \"image\": \"$IMAGE_TAG\",
-                \"ports\": {
-                  \"5000\": \"HTTP\"
-                }
-              }
-            }" \
+                            \"flask\": {
+                              \"image\": \"$IMAGE_TAG\",
+                              \"ports\": {
+                                 \"5000\": \"HTTP\"
+                              }
+                            }
+                          }" \
             --public-endpoint "{
                   \"containerName\": \"flask\",
                   \"containerPort\": 5000
