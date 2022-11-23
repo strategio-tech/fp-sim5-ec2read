@@ -67,8 +67,9 @@ jobs:
           
       - name: deploy
         run: |
-          echo $IMAGE_TAG
           # create a deployment with uploaded docker image
+          
+          echo $IMAGE_TAG
           aws lightsail create-container-service-deployment \
             --service-name memester \
             --containers "{
