@@ -30,6 +30,7 @@ jobs:
   build-service:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Build Docker image
         run: docker build -t fp-sim6-ec2read .
       - name: Login to DockerHub
